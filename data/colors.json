@@ -1,45 +1,58 @@
 [
-    {
-        "color": "Beige",
-        "emoji": "🐕"
-    },{
-        "color": "Black",
-        "emoji": "🖤"
-    },{
-        "color": "Blue",
-        "emoji": "💙"
-    },{
-        "color": "Brown",
-        "emoji": "🤎"
-    },{
-        "color": "Colorful",
-        "emoji": "🌈"
-    },{
-        "color": "Gray",
-        "emoji": "🐘"
-    },{
-        "color": "Green",
-        "emoji": "💚"
-    },{
-        "color": "Light blue",
-        "emoji": "🌊"
-    },{
-        "color": "Orange",
-        "emoji": "🧡"
-    },{
-        "color": "Pink",
-        "emoji": "💗"
-    },{
-        "color": "Purple",
-        "emoji": "💜"
-    },{
-        "color": "Red",
-        "emoji": "❤️"
-    },{
-        "color": "White",
-        "emoji": "🤍"
-    },{
-        "color": "Yellow",
-        "emoji": "💛"
-    }
+  {
+    "color": "Beige",
+    "emoji": "🐕"
+  },
+  {
+    "color": "Black",
+    "emoji": "🖤"
+  },
+  {
+    "color": "Blue",
+    "emoji": "💙"
+  },
+  {
+    "color": "Brown",
+    "emoji": "🤎"
+  },
+  {
+    "color": "Colorful",
+    "emoji": "🌈"
+  },
+  {
+    "color": "Gray",
+    "emoji": "🐘"
+  },
+  {
+    "color": "Green",
+    "emoji": "💚"
+  },
+  {
+    "color": "Light blue",
+    "emoji": "🌊"
+  },
+  {
+    "color": "Orange",
+    "emoji": "🧡"
+  },
+  {
+    "color": "Pink",
+    "emoji": "💗"
+  },
+  {
+    "color": "Purple",
+    "emoji": "💜"
+  },
+  {
+    "color": "Red",
+    "emoji": "❤️"
+  },
+  {
+    "color": "White",
+    "emoji": "🤍"
+  },
+  {
+    "color": "Yellow",
+    "emoji": "💛"
+  }
 ]

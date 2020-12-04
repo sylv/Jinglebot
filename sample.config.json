@@ -1,8 +1,8 @@
 {
-    "token": "discord token",
-    "mongo_uri": "mongo atlas connection string",
-    "nookipedia_key": "api key from https://api.nookipedia.com",
-    "owner_id": "bot owner discord id",
-    "prefix": "prefix for bot commands",
-    "spawn_time": "time in minutes between each villager spawning. integer only, must be at least greater than 1.  (e.g. spawn_time: 5)"
+  "token": "discord token",
+  "mongo_uri": "mongo atlas connection string",
+  "nookipedia_key": "api key from https://api.nookipedia.com",
+  "owner_id": "bot owner discord id",
+  "prefix": "prefix for bot commands",
+  "spawn_time": "time in minutes between each villager spawning. integer only, must be at least greater than 1.  (e.g. spawn_time: 5)"
 }
