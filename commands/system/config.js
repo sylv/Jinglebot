@@ -16,15 +16,15 @@ module.exports.run = async (client, msg, args) => {
   }
 
   if (args[0] === "set-role") {
-    const role = args[1] && msg.guild.roles.resolve(args[1]);
+    const role = args[1] && msg.guild.roles.resolve(args[1].replace(/[\D]/g, ""));
     if (!role) return msg.channel.send("❌🎅 You must provide a role.");
     await GuildSettings.findOneAndUpdate({ id: msg.guild.id }, { id: msg.guild.id, leaderRole: role.id }, { upsert: true });
-    return msg.channel.send(`🎅 Successfully set the ${role.name} role to the leader role.`);
+    return msg.channel.send(`🎅 The person on top of the leaderboard will get the ${role.name} role.`);
   }
 
   // if enable command
   if (args[0] === "enable") {
-    const channel = args[1] ? client.channels.resolve(args[1]) : msg.channel;
+    const channel = args[1] ? client.channels.resolve(args[1].replace(/[\D]/g, "")) : msg.channel;
     await GuildSettings.findOneAndUpdate({ id: msg.guild.id }, { id: msg.guild.id, giftChannel: channel.id }, { upsert: true });
 
     // return success message

@@ -93,15 +93,14 @@ module.exports.run = async (client, msg, args, originalEmbed, foundTop, original
       // when someone reacts
       collector.on("collect", async (collectedReaction) => {
         // find the leaderboard command from the client
-        let lbCmd = client.commands.find((commandKey) => commandKey.commandName === "leaderboard");
-
+        const leaderboardCommand = client.commands.get("leaderboard");
         // go backwards or forwards a page if possible, if not do nothing
         if (collectedReaction.emoji.name === "➡️" && topGifters.length > (page - 1) * 10 + 1 + (currentPage.length - 1)) {
           page += 1;
-          lbCmd.props.run(client, msg, [page], sentMessage, topGifters, asker);
+          leaderboardCommand.run(client, msg, [page], sentMessage, topGifters, asker);
         } else if (collectedReaction.emoji.name === "⬅️" && page !== 1) {
           page -= 1;
-          lbCmd.props.run(client, msg, [page], sentMessage, topGifters, asker);
+          leaderboardCommand.run(client, msg, [page], sentMessage, topGifters, asker);
         }
       });
     });

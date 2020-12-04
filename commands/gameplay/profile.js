@@ -78,15 +78,14 @@ module.exports.run = async (client, msg, args, originalEmbed, foundUser) => {
       // when someone reacts
       collector.on("collect", async (collectedReaction) => {
         // find the profile command from the client
-        let profileCmd = client.commands.find((commandKey) => commandKey.commandName === "profile");
-
+        const profileCommand = client.commands.get("profile");
         // go backwards or forwards a page if possible, if not do nothing
         if (collectedReaction.emoji.name === "➡️" && userData.gifted.length > (page - 1) * 10 + 1 + (currentPage.length - 1)) {
           page += 1;
-          profileCmd.props.run(client, msg, [page], sentMessage, userData);
+          profileCommand.run(client, msg, [page], sentMessage, userData);
         } else if (collectedReaction.emoji.name === "⬅️" && page !== 1) {
           page -= 1;
-          profileCmd.props.run(client, msg, [page], sentMessage, userData);
+          profileCommand.run(client, msg, [page], sentMessage, userData);
         }
       });
     });
