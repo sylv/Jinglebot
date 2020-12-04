@@ -2,7 +2,6 @@
   "token": "discord token",
   "mongo_uri": "mongo atlas connection string",
   "nookipedia_key": "api key from https://api.nookipedia.com",
-  "owner_id": "bot owner discord id",
   "prefix": "j!",
   "wait_time": "30 seconds",
   "time_between_events": {

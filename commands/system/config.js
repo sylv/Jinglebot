@@ -6,10 +6,7 @@ const GuildSettings = require("../../models/GuildSettings");
 // ==================
 module.exports.run = async (client, msg, args) => {
   // if not server owner, return error
-  if (msg.author.id !== msg.guild.ownerID) {
-    return msg.channel.send("❌🎅 You don't have permission to use this command");
-  }
-
+  if (!msg.member.hasPermission("administrator")) return;
   // if no args given, return error
   if (!args[0]) {
     return msg.channel.send("❌🎅 Must provide at least one argument: `enable` or `disable`. Run `j!help config` if you need help.");
