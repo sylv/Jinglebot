@@ -6,3 +6,20 @@ services:
     build: .
     volumes:
       - ./config.json:/usr/src/app/config.json
+  # your connection URI in config.json would look something like:
+  # mongodb://jinglebot:youshallnotpass@jinglebot:27017/jinglebot?authSource=admin
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    container_name: mongo
+    ports: # in production you would want to comment this out so you're not exposing your server by accident
+      - 127.0.0.1:27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=jinglebot
+      - MONGO_INITDB_ROOT_PASSWORD=youshallnotpass
+      - MONGO_INITDB_DATABASE=jinglebot
+    volumes:
+      - mongo:/data/db
+
+volumes:
+  mongo: {}

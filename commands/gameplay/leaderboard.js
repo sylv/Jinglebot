@@ -2,7 +2,7 @@
 // DEPENDENCIES
 // ==================
 const Discord = require("discord.js");
-const User = require("../../models/user");
+const User = require("../../models/User");
 
 // ==================
 // RUN

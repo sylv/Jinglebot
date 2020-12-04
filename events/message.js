@@ -5,21 +5,17 @@
 module.exports = (client, msg) => {
   // break if no prefix
   if (!msg.content.toLowerCase().startsWith(client.prefix) || msg.author.bot) return;
-
   // if in dm's, return an error
   if (!msg.guild) {
     return msg.channel.send("❌🦌 Jingle is not available in DM's!");
   }
-
-  // break if not the correct channel and not owner
-  if (msg.channel.id !== client.playableChannel && msg.author.id !== msg.guild.ownerID && msg.author.id !== client.bot_owner) return;
 
   // get args
   let args = msg.content.slice(client.prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
   // if no command following the prefix or the game command, silently return
-  if (!command || command == "game") return;
+  if (!command) return;
 
   // set command
   const cmd =
