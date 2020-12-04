@@ -1,5 +1,6 @@
 const humanInterval = require("human-interval");
 const axios = require("axios");
+const crypto = require("crypto");
 const config = require("../config.json");
 const GuildSettings = require("../models/GuildSettings");
 const User = require("../models/User");
@@ -41,6 +42,7 @@ async function startEvent(client, msg) {
   const giftChannel = client.channels.resolve(serverSettings.giftChannel);
   if (!giftChannel) return console.debug(`Invalid gift channel ${serverSettings.giftChannel}`);
   const villagerData = villagers[Math.floor(Math.random() * villagers.length)];
+  const seen = new Set();
   // api call to get extra villager data and image
   await axios
     .get(`https://api.nookipedia.com/villagers?name=${villagerData.name}`, {
@@ -68,10 +70,9 @@ async function startEvent(client, msg) {
   let colorChoices = colors.slice();
   let villColors = [];
   let gifter;
-  let existingUser;
 
   // remove the 2 colors that the villager likes
-  await villagerData.colors.forEach((color) => {
+  villagerData.colors.forEach((color) => {
     let colorId = colorChoices.findIndex((colorData) => color == colorData.color);
     if (colorId >= 0) {
       villColors.push(colorChoices[colorId]);
@@ -80,44 +81,41 @@ async function startEvent(client, msg) {
   });
 
   // shuffle the array and slice the first two
-  colorChoices = await colorChoices.sort(() => 0.5 - Math.random()).slice(0, 2);
+  colorChoices = colorChoices.sort(() => 0.5 - Math.random()).slice(0, 2);
   // add a random emoji the villager likes
   let randomColor = villColors[Math.floor(Math.random() * villColors.length)];
   colorChoices.push(randomColor);
+  console.debug(`Emoji is ${randomColor.emoji}`);
 
   // shuffle again
-  await colorChoices.sort(() => 0.5 - Math.random());
+  colorChoices.sort(() => 0.5 - Math.random());
 
   // react to the message
   let emojiFilter = [];
-  await colorChoices.forEach((color) => {
-    sentMessage.react(color.emoji);
+  for (const color of colorChoices) {
+    await sentMessage.react(color.emoji);
     emojiFilter.push(color.emoji);
-  });
+  }
 
   // filter for checking reactions
   const filter = (reaction, user) => emojiFilter.includes(reaction.emoji.name) && !user.bot;
-  // reaction collector - will wait up to 120 seconds
   const collector = sentMessage.createReactionCollector(filter, {
-    // time: 120000,
     time: humanInterval(config.wait_time),
   });
 
   // when someone reacts
   collector.on("collect", async (collectedReaction, reactingUser) => {
-    // when the wrong color is clicked, apply a 1min cooldown to the user so they can't just spam click all colors
-    if (collectedReaction.emoji.name !== randomColor.emoji) {
-      reactingUser.giftCooldown = Date.now() + 60000;
-    }
+    // if the user guessed wrong
+    await collectedReaction.users.remove(reactingUser);
+    if (seen.has(reactingUser.id)) return;
+    seen.add(reactingUser.id, true);
 
     // when right color is clicked and user is not on cd
-    if (collectedReaction.emoji.name === randomColor.emoji && (!reactingUser.giftCooldown || reactingUser.giftCooldown < Date.now())) {
+    if (collectedReaction.emoji.name === randomColor.emoji) {
       // find the gifting user
       User.findOne({ discordId: reactingUser.id }, (err, foundUser) => {
-        existingUser = foundUser;
         // if error, silently return
         if (err) return console.log(err);
-
         // if no user, set the reactor as the gifter and end the collector
         if (!foundUser) {
           gifter = reactingUser;
@@ -126,7 +124,6 @@ async function startEvent(client, msg) {
 
         // if found user, and have gifted this villager  before, silently return
         if (foundUser && foundUser.gifted.some((g) => g.name === villagerData.name)) return;
-
         // if found user, and they havent gifted this villager before, end the collector and pass the user's data
         if (foundUser && !foundUser.gifted.some((g) => g.name === villagerData.name)) {
           gifter = reactingUser;
@@ -163,17 +160,15 @@ async function startEvent(client, msg) {
     };
 
     // if gifter doesn't have an entry yet, create one
+    const existingUser = await User.findOne({ discordId: gifter.id });
     if (!existingUser) {
       await User.create({
         discordId: gifter.id,
         username: gifter.tag,
         gifted: [giftedVillager],
       });
-    }
-
-    // if gifter has an entry, update their gifted array
-    if (existingUser) {
-      await User.update({ discordId: gifter.id, $push: { gifted: giftedVillager } });
+    } else {
+      await User.updateOne({ discordId: gifter.id }, { $push: { gifted: giftedVillager } });
     }
 
     if (serverSettings.leaderRole) {

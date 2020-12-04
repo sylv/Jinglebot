@@ -33,7 +33,7 @@ module.exports.run = async (client, msg, args) => {
 
   // if disable command
   if (args[0] === "disable") {
-    await GuildSettings.update({ id: msg.guild.id }, { giftChannel: null });
+    await GuildSettings.updateOne({ id: msg.guild.id }, { giftChannel: null });
     return msg.channel.send(`🎅 Disabled the gift channel for this server.`);
   }
 
