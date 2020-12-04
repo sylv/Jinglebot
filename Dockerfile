@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:15-alpine
 WORKDIR /usr/src/app
 RUN apk add git --no-cache
 # copying just package.json first means we only have to reinstall dependencies when package.json is updated
