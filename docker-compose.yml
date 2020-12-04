@@ -1,0 +1,8 @@
+version: "3"
+services:
+  jinglebot:
+    container_name: jinglebot
+    restart: unless-stopped
+    build: .
+    volumes:
+      - ./config.json:/usr/src/app/config.json
