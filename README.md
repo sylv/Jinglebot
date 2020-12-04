@@ -9,6 +9,7 @@ Jinglebot is a Discord game bot where server members compete to gift the most An
 - You can select a role to be given to the person on the top of the leaderboard.
 - Other improvements like how commands are registered, how errors are handled, that kinda thing.
 - Reactions are removed if the user is on cooldown (aka has already reacted).
+- Config takes human readable times instead of numbers
 
 ## Features
 
