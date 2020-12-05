@@ -21,6 +21,7 @@ db.on("open", () => {
 // ================
 // INITIALIZING
 // ================
+client.on("debug", (msg) => console.debug(msg));
 client.on("ready", () => {
   console.log("\n\n\x1b[32m%s\x1b[0m", " 🦌  Jinglebot ready to spread cheer! \n\n");
   const globalMemberCount = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
