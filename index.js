@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const config = require("./config.json");
 
-const client = new Discord.Client({ fetchAllMembers: true, messageEditHistoryMaxSize: 0 });
+const client = new Discord.Client({ messageEditHistoryMaxSize: 0 });
 const uri = config.mongo_uri;
 const db = mongoose.connection;
 

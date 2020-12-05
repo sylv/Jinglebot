@@ -104,6 +104,7 @@ async function startEvent(client, msg) {
 
   // when someone reacts
   collector.on("collect", async (collectedReaction, reactingUser) => {
+    console.debug(`collect ${reactingUser.tag}`);
     // if the user guessed wrong
     await collectedReaction.users.remove(reactingUser);
     if (seen.has(reactingUser.id)) return console.debug(`User ${reactingUser.tag} has already reacted`);
@@ -135,6 +136,7 @@ async function startEvent(client, msg) {
 
   // when collector stops
   collector.on("end", async () => {
+    console.debug(`end gifter=${gifter?.tag}`);
     // edit the embed to say the villager wasn't gifted if no correct reactors after 2 mins
     if (!gifter) {
       embed.color = "0xE92F38";
@@ -145,7 +147,7 @@ async function startEvent(client, msg) {
     }
 
     // select a random gift
-    await tops.sort(() => 0.5 - Math.random()).slice(0, 2);
+    tops.sort(() => 0.5 - Math.random()).slice(0, 2);
     const gift = tops.find((top) => top.variants.some((variant) => variant.colors.includes(randomColor.color)));
     const giftVariant = gift.variants.find((variant) => variant.colors.includes(randomColor.color));
     // create the gifted villager object
@@ -171,9 +173,16 @@ async function startEvent(client, msg) {
       await User.updateOne({ discordId: gifter.id }, { $push: { gifted: giftedVillager } });
     }
 
+    // edit the embed
+    embed.color = "0x84f542";
+    embed.title = `${randomColor.emoji}  ${villagerData.name} has been gifted, ${villagerData.catchphrase}!`;
+    embed.description = `<@${gifter.id}> gifted **${villagerData.name}**: ${giftedVillager.gift.name}!`;
+    embed.thumbnail = { url: giftedVillager.gift.image };
+    await sentMessage.edit({ embed });
+
     if (serverSettings.leaderRole) {
       const role = msg.guild.roles.resolve(serverSettings.leaderRole);
-      const giftingMember = msg.guild.members.resolve(gifter.id);
+      const giftingMember = await msg.guild.members.fetch(gifter.id);
       if (role && giftingMember) {
         const currentUser = role.members.first();
         const leaderboardTop = (
@@ -190,24 +199,21 @@ async function startEvent(client, msg) {
         }
       }
     }
-
-    // edit the embed
-    embed.color = "0x84f542";
-    embed.title = `${randomColor.emoji}  ${villagerData.name} has been gifted, ${villagerData.catchphrase}!`;
-    embed.description = `<@${gifter.id}> gifted **${villagerData.name}**: ${giftedVillager.gift.name}!`;
-    embed.thumbnail = { url: giftedVillager.gift.image };
-    await sentMessage.edit({ embed });
   });
 }
 
 // on message
-module.exports = (client, msg) => {
-  if (msg.author.bot) return;
-  if (msg.content.startsWith(config.prefix)) {
-    if (!msg.guild) return msg.channel.send("❌🦌 Jingle is not available in DM's!");
-    return runCommand(client, msg);
-  }
+module.exports = async (client, msg) => {
+  try {
+    if (msg.author.bot) return;
+    if (msg.content.startsWith(config.prefix)) {
+      if (!msg.guild) return msg.channel.send("❌🦌 Jingle is not available in DM's!");
+      return await runCommand(client, msg);
+    }
 
-  if (!msg.guild) return;
-  return startEvent(client, msg);
+    if (!msg.guild) return;
+    return await startEvent(client, msg);
+  } catch (e) {
+    console.error(e);
+  }
 };
