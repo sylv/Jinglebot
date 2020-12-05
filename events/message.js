@@ -97,6 +97,7 @@ async function startEvent(client, msg) {
     emojiFilter.push(color.emoji);
   }
 
+  console.debug(`Creating collector, msg=${sentMessage.id}`);
   // filter for checking reactions
   const collector = sentMessage.createReactionCollector((reaction, user) => !user.bot, {
     time: humanInterval(config.wait_time),
