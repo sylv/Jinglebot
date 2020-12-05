@@ -11,6 +11,7 @@ Jinglebot is a Discord game bot where server members compete to gift the most An
 - Reactions are removed if the user is on cooldown (aka has already reacted).
 - The `config` command requires admin perms instead of owner perms
 - config.json takes human readable times instead of numbers
+- Status shows member count of all guilds the bot is in combined instead of just the first.
 
 ## Features
 

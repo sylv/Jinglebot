@@ -98,8 +98,7 @@ async function startEvent(client, msg) {
   }
 
   // filter for checking reactions
-  const filter = (reaction, user) => emojiFilter.includes(reaction.emoji.name) && !user.bot;
-  const collector = sentMessage.createReactionCollector(filter, {
+  const collector = sentMessage.createReactionCollector((reaction, user) => !user.bot, {
     time: humanInterval(config.wait_time),
   });
 
@@ -107,10 +106,11 @@ async function startEvent(client, msg) {
   collector.on("collect", async (collectedReaction, reactingUser) => {
     // if the user guessed wrong
     await collectedReaction.users.remove(reactingUser);
-    if (seen.has(reactingUser.id)) return;
+    if (seen.has(reactingUser.id)) return console.debug(`User ${reactingUser.tag} has already reacted`);
     seen.add(reactingUser.id, true);
 
     // when right color is clicked and user is not on cd
+    console.debug(collectedReaction.emoji.name, randomColor.emoji, collectedReaction.emoji.name === randomColor.emoji);
     if (collectedReaction.emoji.name === randomColor.emoji) {
       // find the gifting user
       User.findOne({ discordId: reactingUser.id }, (err, foundUser) => {
